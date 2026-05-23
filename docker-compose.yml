@@ -24,6 +24,8 @@ services:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rdv_pkfrc
+      SPRING_DATASOURCE_USERNAME: postgres      # ← manquant
+      SPRING_DATASOURCE_PASSWORD: postgres      # ← manquant
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
     ports:
