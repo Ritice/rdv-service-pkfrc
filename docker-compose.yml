@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: rdv-postgres
+    environment:
+      POSTGRES_DB: rdv_pkfrc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - rdv_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rdv_pkfrc"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: rdv-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rdv_pkfrc
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+
+volumes:
+  rdv_pgdata:
