@@ -2,7 +2,6 @@ package com.rdv_service_pkfrc.exception;
 
 import com.rdv_service_pkfrc.response.Response;
 import jakarta.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 404 NOT FOUND
+    // ERREUR 404 NOT FOUND
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response<Void> handleNotFound(
@@ -36,7 +35,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    // 409 CONFLICT
+    // ERREUR 409 CONFLICT
     @ExceptionHandler(ConflitRdvException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response<Void> handleConflit(
@@ -66,7 +65,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    // 422 BUSINESS EXCEPTION
+    //ERREUR 422 BUSINESS EXCEPTION
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public Response<Void> handleBusiness(
@@ -81,7 +80,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // 400 VALIDATION
+    //ERREUR 400 VALIDATION
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response<Void> handleValidation(
@@ -135,7 +134,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    // 409 OPTIMISTIC LOCK
+    //ERREUR 409 OPTIMISTIC LOCK
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response<Void> handleOptimisticLock(
@@ -151,7 +150,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    // 409 DATABASE INTEGRITY
+    //ERREUR 409 DATABASE INTEGRITY
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Response<Void> handleIntegrity(
@@ -167,7 +166,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    // 500 INTERNAL SERVER ERROR
+    //ERREUR 500 INTERNAL SERVER ERROR
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response<Void> handleGeneric(

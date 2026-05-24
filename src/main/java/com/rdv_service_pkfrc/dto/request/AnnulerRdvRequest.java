@@ -1,9 +1,8 @@
-package com.rdv_service_pkfrc.dto.request.rdv;
-
+package com.rdv_service_pkfrc.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record AnnulerRdvRequestDto(
+public record AnnulerRdvRequest(
         @NotBlank(message = "Le motif d'annulation est obligatoire")
         String motif
 ) {}

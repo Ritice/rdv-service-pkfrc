@@ -27,11 +27,16 @@ CREATE TABLE utilisateur (
      role        VARCHAR(20)  NOT NULL CHECK (role IN ('CLIENT', 'RESPONSABLE')),
      ref_service BIGINT       REFERENCES service_administratif(id),
      actif       BOOLEAN      NOT NULL DEFAULT TRUE,
-     created_at  TIMESTAMP    NOT NULL DEFAULT NOW(),
-     version     BIGINT       NOT NULL DEFAULT 0,  -- Optimistic locking
+     version     BIGINT       NOT NULL DEFAULT 0,
      CONSTRAINT chk_responsable_service
          CHECK (role != 'RESPONSABLE' OR ref_service IS NOT NULL)
+
+    created_at DATETIME2 NOT NULL,
+    created_by varchar(50) NOT NULL,
+    updated_at DATETIME2 DEFAULT NULL,
+    updated_by varchar(50) DEFAULT NULL
     );
+
 
 -- Table des rendez-vous
 CREATE TABLE rendez_vous (
@@ -44,11 +49,16 @@ CREATE TABLE rendez_vous (
      motif_rdv       TEXT         NOT NULL,
      statut          VARCHAR(20)  NOT NULL DEFAULT 'PLANIFIE'
          CHECK (statut IN ('PLANIFIE', 'ANNULE', 'TERMINE')),
-     created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
+
      version         BIGINT       NOT NULL DEFAULT 0,  -- Optimistic locking
 -- Un responsable ne peut avoir qu'un seul RDV par plage et par jour
      CONSTRAINT uq_responsable_plage_date
          UNIQUE (ref_responsable, ref_plage, date_rdv)
+
+     created_at DATETIME2 NOT NULL,
+     created_by varchar(50) NOT NULL,
+     updated_at DATETIME2 DEFAULT NULL,
+     updated_by varchar(50) DEFAULT NULL
 );
 
 -- Table de liaison RDV <-> Clients (max 2 clients par RDV)
@@ -58,10 +68,12 @@ CREATE TABLE rdv_client (
     PRIMARY KEY (rdv_id, client_id)
 );
 
--- ============================================================
+
 -- Index pour les performances
--- ============================================================
 CREATE INDEX idx_rdv_date         ON rendez_vous(date_rdv);
 CREATE INDEX idx_rdv_service      ON rendez_vous(ref_service);
 CREATE INDEX idx_rdv_responsable  ON rendez_vous(ref_responsable);
 CREATE INDEX idx_utilisateur_role ON utilisateur(role);
+
+
+

@@ -1,0 +1,28 @@
+package com.rdv_service_pkfrc.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
+
+public class ReferentielController {
+
+    private final ServiceAdministratifRepository serviceRepository;
+    private final PlageHoraireRepository plageRepository;
+
+    @GetMapping("/services")
+    public ResponseEntity<ApiResponse<List<ServiceResponse>>> getServices() {
+        var services = serviceRepository.findAll().stream()
+                .map(ServiceResponse::from)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.ok(services));
+    }
+
+    @GetMapping("/plages")
+    public ResponseEntity<ApiResponse<List<PlageHoraireResponse>>> getPlages() {
+        var plages = plageRepository.findAllByOrderByHeureDebutAsc().stream()
+                .map(PlageHoraireResponse::from)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.ok(plages));
+    }
+}

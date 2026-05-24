@@ -1,10 +1,12 @@
-package com.rdv_service_pkfrc.dto.request.client;
+package com.rdv_service_pkfrc.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 
-public record ClientResquestDto(
 
+public record CreerClientRequest(
         @NotBlank(message = "La référence est obligatoire")
         @Size(max = 50)
         String ref,

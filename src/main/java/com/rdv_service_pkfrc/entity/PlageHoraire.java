@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PlageHoraire {
+public class PlageHoraire{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

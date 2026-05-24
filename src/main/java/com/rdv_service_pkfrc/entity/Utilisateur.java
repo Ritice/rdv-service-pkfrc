@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Utilisateur {
+public class Utilisateur extends AudiEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

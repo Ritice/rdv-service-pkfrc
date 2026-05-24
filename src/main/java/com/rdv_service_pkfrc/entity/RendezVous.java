@@ -22,7 +22,7 @@ uniqueConstraints = @UniqueConstraint(
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RendezVous {
+public class RendezVous extends AudiEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

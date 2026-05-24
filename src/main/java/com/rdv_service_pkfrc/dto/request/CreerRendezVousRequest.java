@@ -1,12 +1,14 @@
-package com.rdv_service_pkfrc.dto.request.rdv;
+package com.rdv_service_pkfrc.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public record RendevousRequestDto(
-
+public record CreerRendezVousRequest(
         @NotBlank(message = "La référence client est obligatoire")
         String refClient,
 
@@ -30,5 +32,7 @@ public record RendevousRequestDto(
         @Size(max = 1000)
         String motifRdv,
 
+        // Clients additionnels (optionnel, max 1 car le premier vient de refClient)
         List<@NotBlank String> refsClientsAdditionnels
 ) {}
+
