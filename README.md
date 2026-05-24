@@ -111,8 +111,6 @@ POST  `/api/v1/rendez-vous/{refRdv}/clients` | Ajouter un client à un RDV |
 PATCH  `/api/v1/rendez-vous/{refRdv}/annuler` | Annuler un RDV |
 
 
-
-
 ## Règles Métier
 
 | 1 responsable par plage/jour | Contrainte UNIQUE BD + verrou pessimiste |
