@@ -4,16 +4,10 @@ import com.rdv_service_pkfrc.entity.enumeration.RoleUtilisateur;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "utilisateur")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Utilisateur extends AudiEntity {
 
     @Id
@@ -47,19 +41,10 @@ public class Utilisateur extends AudiEntity {
     @Builder.Default
     private boolean actif = true;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @Version
     private Long version;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
 
     public String getNomComplet() {
         return prenom + " " + nom;
     }
 }
-

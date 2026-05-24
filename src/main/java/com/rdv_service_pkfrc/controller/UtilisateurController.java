@@ -33,7 +33,6 @@ public class UtilisateurController {
     }
 
     //RESPONSABLE
-
     @PostMapping("/responsables")
     public ResponseEntity<ApiResponse<UtilisateurResponse>> creerResponsable(
             @Valid @RequestBody CreerResponsableRequest request
@@ -44,7 +43,6 @@ public class UtilisateurController {
     }
 
     // CONSULTATION
-
     @GetMapping("/{ref}")
     public ResponseEntity<ApiResponse<UtilisateurResponse>> getByRef(@PathVariable String ref) {
         return ResponseEntity.ok(ApiResponse.ok(utilisateurService.findByRef(ref)));

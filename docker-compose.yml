@@ -52,7 +52,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ritice
       SPRING_DATASOURCE_PASSWORD: ritice
     ports:
-      - "8081:8080"
+      - "8080:8080"
     networks:
       - postgres
 

@@ -20,17 +20,18 @@ import java.time.LocalDateTime;
 public class AudiEntity {
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
     @CreatedBy
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private String createdBy;
 
     @LastModifiedDate
-    @Column(insertable = false)
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
-    @LastModifiedBy
-    @Column(insertable = false)
-    private String updatedBy;
 
+    @LastModifiedBy
+    @Column(nullable = false)
+    private String updatedBy;
 }

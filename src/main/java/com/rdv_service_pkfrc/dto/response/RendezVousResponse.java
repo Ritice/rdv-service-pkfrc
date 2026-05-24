@@ -6,7 +6,6 @@ import com.rdv_service_pkfrc.entity.enumeration.StatutRdv;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public record RendezVousResponse(
@@ -25,7 +24,7 @@ public record RendezVousResponse(
     public static RendezVousResponse from(RendezVous rdv) {
         List<UtilisateurSommaireResponse> clientsList = rdv.getClients().stream()
                 .map(UtilisateurSommaireResponse::from)
-                .collect(Collectors.toList());
+                .toList();
 
         return new RendezVousResponse(
                 rdv.getId(),

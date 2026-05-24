@@ -2,6 +2,7 @@ package com.rdv_service_pkfrc.exception;
 
 import com.rdv_service_pkfrc.response.Response;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     // ERREUR 404 NOT FOUND
@@ -169,10 +171,8 @@ public class GlobalExceptionHandler {
     //ERREUR 500 INTERNAL SERVER ERROR
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Response<Void> handleGeneric(
-            Exception ex
-    ) {
-
+    public Response<Void> handleGeneric(Exception ex) {
+        log.error("Erreur interne non gérée: {}", ex.getMessage(), ex);
         return new Response<>(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Une erreur interne est survenue.",

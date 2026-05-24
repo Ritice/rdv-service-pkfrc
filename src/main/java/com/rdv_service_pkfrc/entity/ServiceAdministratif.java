@@ -3,16 +3,11 @@ package com.rdv_service_pkfrc.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "service_administratif")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class ServiceAdministratif {
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class ServiceAdministratif extends AudiEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,14 +22,5 @@ public class ServiceAdministratif {
     @Column(nullable = false)
     @Builder.Default
     private boolean actif = true;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
 }
 

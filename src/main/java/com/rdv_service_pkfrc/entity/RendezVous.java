@@ -5,23 +5,15 @@ import com.rdv_service_pkfrc.entity.enumeration.StatutRdv;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(
-name = "rendez_vous",
-uniqueConstraints = @UniqueConstraint(
+@Table(name = "rendez_vous", uniqueConstraints = @UniqueConstraint(
         name = "uq_responsable_plage_date",
         columnNames = {"ref_responsable", "ref_plage", "date_rdv"}
-)
-)
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+))
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class RendezVous extends AudiEntity {
 
     @Id
@@ -54,10 +46,6 @@ public class RendezVous extends AudiEntity {
     @Builder.Default
     private StatutRdv statut = StatutRdv.PLANIFIE;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    // Optimistic locking pour gérer la concurrence
     @Version
     private Long version;
 
@@ -70,14 +58,7 @@ public class RendezVous extends AudiEntity {
     @Builder.Default
     private Set<Utilisateur> clients = new HashSet<>();
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        if (statut == null) statut = StatutRdv.PLANIFIE;
-    }
-
     public void ajouterClient(Utilisateur client) {
         clients.add(client);
     }
 }
-

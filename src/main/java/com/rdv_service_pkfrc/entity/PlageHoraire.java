@@ -7,12 +7,8 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "plage_horaire")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class PlageHoraire{
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class PlageHoraire extends AudiEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

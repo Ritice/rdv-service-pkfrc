@@ -46,15 +46,15 @@ public class RendezVousServiceImpl implements RendezVousService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public RendezVousResponse creerRendezVous(CreerRendezVousRequest req) {
 
-        // 1. Vérifier unicité de la référence RDV
+        // Vérifier unicité de la référence RDV
         if (rdvRepository.existsByRefRdv(req.refRDV())) {
             throw new DuplicateReferenceException("Un RDV avec la référence '" + req.refRDV() + "' existe déjà.");
         }
 
-        // 2. Valider le délai minimum (2 jours)
+        // Valider le délai minimum (2 jours)
         validerDelai(req.dateRDV());
 
-        // 3. Résoudre les entités liées
+        //Résoudre les entités liées
         var service = serviceRepository.findByRefAndActifTrue(req.refService())
                 .orElseThrow(() -> ResourceNotFoundException.of("Service", req.refService()));
 
@@ -64,10 +64,10 @@ public class RendezVousServiceImpl implements RendezVousService {
                 .orElseThrow(() -> new BusinessException(
                         "Aucune plage horaire ne commence à " + req.heureRDV() + ". Plages valides : 08h à 15h."));
 
-        // 4. Vérifier le conflit responsable (avec verrou pessimiste)
+        //Vérifier le conflit responsable (avec verrou pessimiste)
         verifierConflitResponsable(responsable.getId(), plage.getId(), req.dateRDV());
 
-        // 5. Résoudre et valider les clients
+        //Résoudre et valider les clients
         var clientPrincipal = trouverClient(req.refClient());
         List<Utilisateur> tousLesClients = new ArrayList<>();
         tousLesClients.add(clientPrincipal);
@@ -80,12 +80,12 @@ public class RendezVousServiceImpl implements RendezVousService {
             }
         }
 
-        // 6. Valider la capacité (max 2 personnes physiques)
+        //Valider la capacité (max 2 personnes physiques)
         if (tousLesClients.size() > MAX_CLIENTS_PAR_RDV) {
             throw new CapaciteRdvException();
         }
 
-        // 7. Construire et persister le RDV
+        //Construire et persister le RDV
         var rdv = RendezVous.builder()
                 .refRdv(req.refRDV())
                 .service(service)
