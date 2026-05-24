@@ -4,7 +4,7 @@ API REST de gestion de rendez-vous administratifs.
 
 ## Stack Technique
 Langage | Java 21 (Records, Switch Expressions, Text Blocks) |
-Framework | Spring Boot 3.5.15 |
+Framework | Spring Boot 3.4.5 |
 Base de données | PostgreSQL 15+ |
 Migration BD | Flyway |
 Tests | JUnit 5, Mockito, MockMvc |
@@ -27,11 +27,13 @@ PostgreSQL 15+** en cours d'exécution
 docker run -d \
   --name rdv-postgres \
   -e POSTGRES_DB=rdv_pkfrc \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -p 5432:5432 \
+  -e POSTGRES_USER=ritice \
+  -e POSTGRES_PASSWORD=ritice \
+  -p 5433:5432 \
   postgres:15-alpine
 ```
+**Ouvrir l'interface de pdAdmin a cette adrees**
+ -localhost:5050
 
 **Ou manuellement :**
 ```sql
@@ -39,19 +41,17 @@ CREATE DATABASE rdv_pkfrc;
 ```
 
 ### 2. Cloner et construire
-
-```bash
 git clone https://github.com/Ritice/rdv-service-pkfrc.git
-cd rdv-service
+cd rdv-service-pkfrc
 mvn clean package -DskipTests
-```
+
 
 ### 3. Lancer l'application
 
 ```bash
 # Variables d'environnement (optionnel si postgres/postgres par défaut)
-export DB_USERNAME=postgres
-export DB_PASSWORD=postgres
+export DB_USERNAME=ritice
+export DB_PASSWORD=ritice
 
 mvn spring-boot:run
 ```
@@ -86,96 +86,35 @@ mvn test -Dtest="*IntegrationTest"
 
 ## Endpoints API
 
-### Référentiel (données figées)
+**lien de la Documentation OpenAPI JSON pour tester les different Endpoints**
+## http://localhost:8080/swagger-ui/index.html#/
 
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| GET | `/api/v1/referentiel/services` | Liste des 5 services |
-| GET | `/api/v1/referentiel/plages` | Plages horaires 08h-16h |
+### Référentiel (données figées)
+GET  `/api/v1/referentiel/services` | Liste des 5 services |
+GET  `/api/v1/referentiel/plages` | Plages horaires 08h-16h |
 
 ### Utilisateurs
-
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/api/v1/utilisateurs/clients` | Créer un client |
-| POST | `/api/v1/utilisateurs/responsables` | Créer un responsable |
-| GET | `/api/v1/utilisateurs` | Lister tous les utilisateurs |
-| GET | `/api/v1/utilisateurs?role=CLIENT` | Filtrer par rôle |
-| GET | `/api/v1/utilisateurs/{ref}` | Consulter un utilisateur |
-| DELETE | `/api/v1/utilisateurs/{ref}` | Désactiver un utilisateur |
+ POST  `/api/v1/utilisateurs/clients` | Créer un client |
+ POST  `/api/v1/utilisateurs/responsables` | Créer un responsable |
+ GET  `/api/v1/utilisateurs` | Lister tous les utilisateurs |
+ GET  `/api/v1/utilisateurs?role=CLIENT` | Filtrer par rôle |
+ GET  `/api/v1/utilisateurs/{ref}` | Consulter un utilisateur |
+ DELETE  `/api/v1/utilisateurs/{ref}` | Désactiver un utilisateur |
 
 ### Rendez-vous
+POST  `/api/v1/rendez-vous` | Créer un RDV |
+GET  `/api/v1/rendez-vous` | Lister tous les RDV |
+GET  `/api/v1/rendez-vous/{refRdv}` | Consulter un RDV |
+GET  `/api/v1/rendez-vous/responsable/{ref}` | RDV d'un responsable |
+GET  `/api/v1/rendez-vous/client/{ref}` | RDV d'un client |
+POST  `/api/v1/rendez-vous/{refRdv}/clients` | Ajouter un client à un RDV |
+PATCH  `/api/v1/rendez-vous/{refRdv}/annuler` | Annuler un RDV |
 
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/api/v1/rendez-vous` | Créer un RDV |
-| GET | `/api/v1/rendez-vous` | Lister tous les RDV |
-| GET | `/api/v1/rendez-vous/{refRdv}` | Consulter un RDV |
-| GET | `/api/v1/rendez-vous/responsable/{ref}` | RDV d'un responsable |
-| GET | `/api/v1/rendez-vous/client/{ref}` | RDV d'un client |
-| POST | `/api/v1/rendez-vous/{refRdv}/clients` | Ajouter un client à un RDV |
-| PATCH | `/api/v1/rendez-vous/{refRdv}/annuler` | Annuler un RDV |
 
----
 
-## Exemples de Requêtes
-
-### Créer un client
-```bash
-curl -X POST http://localhost:8080/api/v1/utilisateurs/clients \
-  -H "Content-Type: application/json" \
-  -d '{
-    "ref": "CLI-001",
-    "email": "jean.dupont@mail.cm",
-    "telephone": "690000001",
-    "nom": "Dupont",
-    "prenom": "Jean"
-  }'
-```
-
-### Créer un responsable
-```bash
-curl -X POST http://localhost:8080/api/v1/utilisateurs/responsables \
-  -H "Content-Type: application/json" \
-  -d '{
-    "ref": "RESP-001",
-    "email": "pierre.fokam@pkfrc.cm",
-    "telephone": "690000002",
-    "nom": "Fokam",
-    "prenom": "Pierre",
-    "refService": "SVC-001"
-  }'
-```
-
-### Créer un RDV
-```bash
-curl -X POST http://localhost:8080/api/v1/rendez-vous \
-  -H "Content-Type: application/json" \
-  -d '{
-    "refClient": "CLI-001",
-    "refRDV": "RDV-001",
-    "refService": "SVC-001",
-    "refResponsable": "RESP-001",
-    "dateRDV": "2026-06-05",
-    "heureRDV": "09:00",
-    "motifRdv": "Consultation des archives 2024",
-    "refsClientsAdditionnels": []
-  }'
-```
-
-### Annuler un RDV
-```bash
-curl -X PATCH http://localhost:8080/api/v1/rendez-vous/RDV-001/annuler \
-  -H "Content-Type: application/json" \
-  -d '{"motif": "Indisponibilité du client"}'
-```
-
----
 
 ## Règles Métier
 
-| Règle | Implémentation |
-|-------|----------------|
 | 1 responsable par plage/jour | Contrainte UNIQUE BD + verrou pessimiste |
 | Max 2 clients par RDV | Validation service + contrainte applicative |
 | RDV ≥ 2 jours à l'avance | Validation `LocalDate` dans le service |
@@ -183,12 +122,10 @@ curl -X PATCH http://localhost:8080/api/v1/rendez-vous/RDV-001/annuler \
 | 5 services disponibles | Données figées en BD via Flyway |
 
 ## Gestion de la Concurrence
-
 La création simultanée de RDV est gérée à deux niveaux :
 
 1. **Verrou pessimiste** (`PESSIMISTIC_WRITE`) sur la requête de vérification de conflit responsable — empêche deux transactions concurrentes de valider le même créneau simultanément.
 2. **Verrou optimiste** (`@Version`) sur les entités `RendezVous` et `Utilisateur` — détecte les modifications concurrentes et retourne un HTTP 409 clair.
-3. **Contrainte UNIQUE** en base de données (`responsable + plage + date`) comme filet de sécurité ultime.
+3. **Contrainte UNIQUE** en base de données (`responsable + plage + date`) comme filet de sécurité.
 
----
 

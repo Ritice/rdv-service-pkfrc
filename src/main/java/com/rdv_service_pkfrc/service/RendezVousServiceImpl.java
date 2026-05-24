@@ -1,4 +1,4 @@
-package com.rdv_service_pkfrc.service.impl;
+package com.rdv_service_pkfrc.service;
 
 import com.rdv_service_pkfrc.dto.request.AjouterClientRdvRequest;
 import com.rdv_service_pkfrc.dto.request.AnnulerRdvRequest;

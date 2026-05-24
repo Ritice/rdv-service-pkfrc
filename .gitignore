@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environnement ###
+.env
+*.env.local
+
+### Logs ###
+*.log
+logs/
+
+### OS ###
+.DS_Store
+Thumbs.db
