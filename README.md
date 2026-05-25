@@ -3,6 +3,7 @@
 API REST de gestion de rendez-vous administratifs.
 
 ## Stack Technique
+
 Langage | Java 21 (Records, Switch Expressions, Text Blocks) |
 Framework | Spring Boot 3.4.5 |
 Base de données | PostgreSQL 15+ |
@@ -10,19 +11,21 @@ Migration BD | Flyway |
 Tests | JUnit 5, Mockito, MockMvc |
 Build | Maven 3.9+ |
 
-
 ## Prérequis
+
 JDK 21** installé (`java -version`)
 Maven 3.9+** (`mvn -version`)
-PostgreSQL 15+** en cours d'exécution
+PostgreSQL 15+\*\* en cours d'exécution
 (Optionnel) Docker pour lancer Postgres rapidement
 
 ---
 
 ## Lancement
+
 ### 1. Base de données PostgreSQL
 
 **Avec Docker :**
+
 ```bash
 docker run -d \
   --name rdv-postgres \
@@ -32,19 +35,21 @@ docker run -d \
   -p 5433:5432 \
   postgres:15-alpine
 ```
+
 **Ouvrir l'interface de pdAdmin a cette adrees**
- -localhost:5050
+-localhost:5050
 
 **Ou manuellement :**
+
 ```sql
 CREATE DATABASE rdv_pkfrc;
 ```
 
 ### 2. Cloner et construire
+
 git clone https://github.com/Ritice/rdv-service-pkfrc.git
 cd rdv-service-pkfrc
 mvn clean package -DskipTests
-
 
 ### 3. Lancer l'application
 
@@ -57,6 +62,7 @@ mvn spring-boot:run
 ```
 
 Ou directement :
+
 ```bash
 java -jar target/rdv-service-1.0.0-SNAPSHOT.jar
 ```
@@ -82,34 +88,39 @@ mvn test -Dtest="*IntegrationTest"
 
 > Les tests d'intégration utilisent un profil `test` avec H2 en mémoire — aucun PostgreSQL requis.
 
----
+## esquise de la base de donnée
+
+![Diagramme PKF](diagramme-pkf.jpg)
 
 ## Endpoints API
 
 **lien de la Documentation OpenAPI JSON pour tester les different Endpoints**
+
 ## http://localhost:8080/swagger-ui/index.html#/
 
 ### Référentiel (données figées)
-GET  `/api/v1/referentiel/services` | Liste des 5 services |
-GET  `/api/v1/referentiel/plages` | Plages horaires 08h-16h |
+
+GET `/api/v1/referentiel/services` | Liste des 5 services |
+GET `/api/v1/referentiel/plages` | Plages horaires 08h-16h |
 
 ### Utilisateurs
- POST  `/api/v1/utilisateurs/clients` | Créer un client |
- POST  `/api/v1/utilisateurs/responsables` | Créer un responsable |
- GET  `/api/v1/utilisateurs` | Lister tous les utilisateurs |
- GET  `/api/v1/utilisateurs?role=CLIENT` | Filtrer par rôle |
- GET  `/api/v1/utilisateurs/{ref}` | Consulter un utilisateur |
- DELETE  `/api/v1/utilisateurs/{ref}` | Désactiver un utilisateur |
+
+POST `/api/v1/utilisateurs/clients` | Créer un client |
+POST `/api/v1/utilisateurs/responsables` | Créer un responsable |
+GET `/api/v1/utilisateurs` | Lister tous les utilisateurs |
+GET `/api/v1/utilisateurs?role=CLIENT` | Filtrer par rôle |
+GET `/api/v1/utilisateurs/{ref}` | Consulter un utilisateur |
+DELETE `/api/v1/utilisateurs/{ref}` | Désactiver un utilisateur |
 
 ### Rendez-vous
-POST  `/api/v1/rendez-vous` | Créer un RDV |
-GET  `/api/v1/rendez-vous` | Lister tous les RDV |
-GET  `/api/v1/rendez-vous/{refRdv}` | Consulter un RDV |
-GET  `/api/v1/rendez-vous/responsable/{ref}` | RDV d'un responsable |
-GET  `/api/v1/rendez-vous/client/{ref}` | RDV d'un client |
-POST  `/api/v1/rendez-vous/{refRdv}/clients` | Ajouter un client à un RDV |
-PATCH  `/api/v1/rendez-vous/{refRdv}/annuler` | Annuler un RDV |
 
+POST `/api/v1/rendez-vous` | Créer un RDV |
+GET `/api/v1/rendez-vous` | Lister tous les RDV |
+GET `/api/v1/rendez-vous/{refRdv}` | Consulter un RDV |
+GET `/api/v1/rendez-vous/responsable/{ref}` | RDV d'un responsable |
+GET `/api/v1/rendez-vous/client/{ref}` | RDV d'un client |
+POST `/api/v1/rendez-vous/{refRdv}/clients` | Ajouter un client à un RDV |
+PATCH `/api/v1/rendez-vous/{refRdv}/annuler` | Annuler un RDV |
 
 ## Règles Métier
 
@@ -120,10 +131,9 @@ PATCH  `/api/v1/rendez-vous/{refRdv}/annuler` | Annuler un RDV |
 | 5 services disponibles | Données figées en BD via Flyway |
 
 ## Gestion de la Concurrence
+
 La création simultanée de RDV est gérée à deux niveaux :
 
 1. **Verrou pessimiste** (`PESSIMISTIC_WRITE`) sur la requête de vérification de conflit responsable — empêche deux transactions concurrentes de valider le même créneau simultanément.
 2. **Verrou optimiste** (`@Version`) sur les entités `RendezVous` et `Utilisateur` — détecte les modifications concurrentes et retourne un HTTP 409 clair.
 3. **Contrainte UNIQUE** en base de données (`responsable + plage + date`) comme filet de sécurité.
-
-
