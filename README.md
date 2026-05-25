@@ -90,7 +90,7 @@ mvn test -Dtest="*IntegrationTest"
 
 ## esquise de la base de donnée
 
-![Diagramme PKF](diagramme-pkf.jpg)
+![Diagramme PKF](image/diagramme-pkf.jpg)
 
 ## Endpoints API
 
